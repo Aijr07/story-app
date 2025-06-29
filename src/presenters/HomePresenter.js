@@ -9,35 +9,33 @@ export default class HomePresenter {
 
   // Metode untuk memulai pemuatan dan menampilkan cerita
   async startLoadingStories() {
-    // Memverifikasi keberadaan token otentikasi pengguna
     const userToken = localStorage.getItem("token");
     if (!userToken) {
       console.warn("Kunci akses tidak ditemukan. Mengarahkan pengguna ke halaman masuk...");
       this.view.redirectToLogin();
-      return; // Menghentikan eksekusi jika token tidak ada
+      return;
     }
 
-    // Berusaha mengambil cerita dari API, dengan opsi fallback ke data offline
     await this._fetchStoriesWithFallback(userToken);
   }
 
-  // Metode privat untuk mengambil cerita dari API atau IndexedDB
   async _fetchStoriesWithFallback(token) {
-    try {
-      // Mencoba mengambil daftar cerita dari layanan API
-      const { listStory } = await this.model.getAllStories(token);
-      this.view.renderStories(listStory); // Menampilkan cerita yang berhasil didapatkan
-    } catch (networkError) {
-      // Jika terjadi kegagalan jaringan atau API, coba dari penyimpanan lokal
+    // ---- PERUBAHAN DI SINI ----
+    const result = await this.model.getAllStories(token); // Ambil objek hasil lengkap
+    if (result.error) {
+      // Jika ada error dari API (termasuk respons offline dari SW)
       console.error(
-        "Gagal mengambil cerita dari API, mencoba memuat dari cache lokal:",
-        networkError,
+        "Gagal mengambil cerita dari API, mencoba memuat dari penyimpanan offline:",
+        result.message,
       );
-      await this._retrieveStoriesFromOfflineStorage();
+      await this._retrieveStoriesFromOfflineStorage(); // Lakukan fallback
+    } else {
+      // Jika berhasil dari API
+      this.view.renderStories(result.listStory);
     }
+    // ---- AKHIR PERUBAHAN ----
   }
 
-  // Metode privat untuk mendapatkan cerita dari IndexedDB
   async _retrieveStoriesFromOfflineStorage() {
     try {
       const offlineEntries = await IndexedDBService.getAllStories();
@@ -45,9 +43,8 @@ export default class HomePresenter {
         this.view.showAlert(
           "Tidak dapat terhubung ke server. Menampilkan konten dari penyimpanan offline.",
         );
-        this.view.renderStories(offlineEntries); // Menampilkan cerita dari IndexedDB
+        this.view.renderStories(offlineEntries);
       } else {
-        // Jika tidak ada data baik dari API maupun penyimpanan offline
         this.view.showAlert(
           "Gagal memuat cerita. Periksa sambungan internet Anda atau coba lagi nanti.",
         );
@@ -58,7 +55,6 @@ export default class HomePresenter {
     }
   }
 
-  // Metode init (ditinggalkan untuk kompatibilitas, panggil startLoadingStories)
   async init() {
     await this.startLoadingStories();
   }

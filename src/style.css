@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+/* View Transitions for smooth page changes */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 300ms;
+  animation-timing-function: ease-in-out;
+}
+
+::view-transition-old(root) {
+  animation-name: fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: fade-in;
+}
+
+/* Keyframe animations for fading effects */
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ensure the header transitions smoothly */
+header {
+  view-transition-name: main-header; /* Changed name for clarity */
+}
+
+/* Styling for the map container */
+#map {
+  height: 250px;
+  border-radius: 8px;
+  /* Added a subtle dark green border for consistency */
+  border: 1px solid #166534; /* Approximate green-800 color */
+}

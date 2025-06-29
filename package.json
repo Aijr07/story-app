@@ -1,0 +1,21 @@
+{
+  "name": "ceritaku-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.7",
+    "idb": "^8.0.3",
+    "leaflet": "^1.9.4",
+    "tailwindcss": "^4.1.7"
+  }
+}

@@ -15,7 +15,7 @@ export default class HomeView {
     this.container.innerHTML = `
       <main id="main-content" class="container mx-auto py-8">
         <h1 class="text-7xl font-bold text-center mb-6 text-green-800">List Cerita</h1>
-        <section aria-label="Daftar cerita" id="storyList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-4"></section>
+        <section aria-label="Daftar cerita" id="storyList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 p-4"></section>
       </main>
     `;
     // Inisialisasi presenter setelah elemen DOM tersedia

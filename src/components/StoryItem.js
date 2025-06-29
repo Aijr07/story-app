@@ -1,4 +1,4 @@
-import IndexedDBService from "../services/IndexedDBService.js"; 
+import IndexedDBService from "../services/IndexedDBService.js";
 
 class StoryItem extends HTMLElement {
   constructor() {
@@ -7,18 +7,16 @@ class StoryItem extends HTMLElement {
     this._onSaveCallback = null;
   }
 
-  // Metode untuk mengatur data cerita dan callback, lalu merender dan menambahkan event listener
   setStory(story, onSaveCallback) {
     this._story = story;
     this._onSaveCallback = onSaveCallback;
     this.render();
-    this._attachEventListeners(); 
+    this._attachEventListeners();
   }
 
-  // Metode untuk merender tampilan kartu cerita
   render() {
     if (!this._story) {
-      this.innerHTML = "<p>Data cerita tidak tersedia.</p>"; 
+      this.innerHTML = "<p>Data cerita tidak tersedia.</p>";
       return;
     }
 
@@ -39,21 +37,19 @@ class StoryItem extends HTMLElement {
         </div>
       </article>
     `;
-    this._refreshButtonStatus(); // Mengubah nama agar lebih jelas
+    this._refreshButtonStatus();
   }
 
-  // Metode privat untuk menambahkan event listener ke elemen-elemen
   _attachEventListeners() {
     const saveButton = this.querySelector(".save-story-btn");
-    const deleteButton = this.querySelector(".delete-story-btn"); // Ambil elemen delete di sini
+    const deleteButton = this.querySelector(".delete-story-btn");
     const cardContainer = this.querySelector(".story-card-container");
 
     if (saveButton) {
       saveButton.addEventListener("click", async (event) => {
-        event.stopPropagation(); // Mencegah event click menyebar ke card container
+        event.stopPropagation();
         if (this._onSaveCallback) {
           await this._onSaveCallback(this._story);
-          alert(`Kisah "${this._story.name}" telah berhasil disimpan!`); 
           this._refreshButtonStatus();
         }
       });
@@ -61,9 +57,9 @@ class StoryItem extends HTMLElement {
 
     if (deleteButton) {
       deleteButton.addEventListener("click", async (event) => {
-        event.stopPropagation(); // Mencegah event click menyebar
-        await IndexedDBService.deleteStory(this._story.id); // Langsung gunakan IndexedDBService
-        alert(`Kisah "${this._story.name}" telah dihapus dari penyimpanan perangkat.`); 
+        event.stopPropagation();
+        await IndexedDBService.deleteStory(this._story.id);
+        alert(`Kisah "${this._story.name}" telah dihapus dari penyimpanan perangkat.`);
         this._refreshButtonStatus();
       });
     }
@@ -81,19 +77,18 @@ class StoryItem extends HTMLElement {
     }
   }
 
-  // Metode privat untuk memperbarui status tombol Simpan/Hapus
   async _refreshButtonStatus() {
-    const savedStory = await IndexedDBService.getStoryById(this._story.id); // Langsung gunakan IndexedDBService
+    const savedStory = await IndexedDBService.getStoryById(this._story.id);
     const saveButton = this.querySelector(".save-story-btn");
     const deleteButton = this.querySelector(".delete-story-btn");
 
     if (saveButton) {
       if (savedStory) {
-        saveButton.textContent = "Sudah Disimpan"; 
-        saveButton.disabled = true;
-        saveButton.classList.remove("bg-green-700", "hover:bg-green-600", "focus:ring-green-700");
-        saveButton.classList.add("bg-gray-400", "cursor-not-allowed");
+        // Jika cerita sudah disimpan, sembunyikan tombol "Simpan Cerita"
+        saveButton.classList.add("hidden");
       } else {
+        // Jika cerita belum disimpan, pastikan tombol "Simpan Cerita" terlihat
+        saveButton.classList.remove("hidden");
         saveButton.textContent = "Simpan Cerita";
         saveButton.disabled = false;
         saveButton.classList.add("bg-green-700", "hover:bg-green-600", "focus:ring-green-700");
@@ -103,8 +98,10 @@ class StoryItem extends HTMLElement {
 
     if (deleteButton) {
       if (savedStory) {
+        // Jika cerita sudah disimpan, tampilkan tombol "Hapus dari Lokal"
         deleteButton.classList.remove("hidden");
       } else {
+        // Jika cerita belum disimpan, sembunyikan tombol "Hapus dari Lokal"
         deleteButton.classList.add("hidden");
       }
     }

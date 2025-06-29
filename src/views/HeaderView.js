@@ -14,7 +14,7 @@ export class HeaderView {
             Skip to content
           </a>
           <h1 class="text-lg font-bold">
-            <a href="#/">Dicoding Story App</a>
+            <a href="#/">Story App</a>
           </h1>
           <nav class="space-x-4 flex items-center">
             <button id="toggleNotifBtn" class="hover:bg-green-700 p-2 rounded-md flex items-center space-x-2">
